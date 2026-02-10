@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MCP Mappr - Schematic Viewer</title>
+    <style>
+        :root {
+            --bg-color: #0b0d17;
+            --node-fill: #151626;
+            --node-stroke: #7A5CFF;
+            --font-color: #EDEDED;
+            --edge-color: #CFC5FF;
+            --glow-color: #7A5CFF;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            font-family: 'Cal Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 90vw;
+            height: 80vh;
+            filter: drop-shadow(0 0 3px var(--glow-color));
+            /* Tighter glow */
+        }
+
+        .node rect {
+            fill: var(--node-fill);
+            stroke: var(--node-stroke);
+            stroke-width: 2;
+            rx: 16;
+            /* Rounded corners */
+        }
+
+        .node text {
+            fill: var(--font-color);
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .edge {
+            stroke: var(--edge-color);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .edge-label {
+            fill: var(--edge-color);
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <svg id="schematic" viewBox="0 0 1200 800">
+        <!-- Defined markers for arrows -->
+        <defs>
+            <!-- Lucide-style chevron arrow -->
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                <polyline points="1 1, 9 5, 1 9" fill="none" stroke="#CFC5FF" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </marker>
+        </defs>
+
+        <!-- Content will be injected here by JS -->
+    </svg>
+
+    <script>
+        // EMBEDDED MAP.JSON DATA
+        const mapData = {
+            "style": {
+                "THEME": "dark",
+                "BG_COLOR": "#0b0d17",
+                "NODE_FILL": "#151626",
+                "NODE_STROKE": "#7A5CFF",
+                "EDGE_COLOR": "#CFC5FF"
+            },
+            "nodes": [
+                { "id": "Raw Transcript", "label": "Raw Transcript (Chaos)", "x": 100, "y": 300 },
+                { "id": "AI Agent", "label": "AI Agent Processing", "x": 400, "y": 300 },
+                { "id": "Structured Intelligence", "label": "Structured Intelligence", "x": 700, "y": 300 },
+                { "id": "Projects", "label": "Projects", "x": 1000, "y": 150 },
+                { "id": "Products", "label": "Products", "x": 1000, "y": 250 },
+                { "id": "People", "label": "People", "x": 1000, "y": 350 },
+                { "id": "Ideas", "label": "Ideas", "x": 1000, "y": 450 }
+            ],
+            "edges": [
+                { "from": "Raw Transcript", "to": "AI Agent" },
+                { "from": "AI Agent", "to": "Structured Intelligence" },
+                { "from": "Structured Intelligence", "to": "Projects", "elbow": "down" },
+                { "from": "Structured Intelligence", "to": "Products", "elbow": "down" },
+                { "from": "Structured Intelligence", "to": "People", "elbow": "down" },
+                { "from": "Structured Intelligence", "to": "Ideas", "elbow": "down" }
+            ]
+        };
+
+        const svg = document.getElementById('schematic');
+
+        // Draw Edges
+        mapData.edges.forEach(edge => {
+            const source = mapData.nodes.find(n => n.id === edge.from);
+            const target = mapData.nodes.find(n => n.id === edge.to);
+
+            let d = "";
+            if (edge.elbow) {
+                // Simple elbow logic: Horizontal then Vertical
+                const midX = (source.x + target.x) / 2;
+                d = `M ${source.x + 100} ${source.y + 25} L ${target.x} ${target.y + 25}`;
+                // Creating a better elbow path manually for this specific layout
+                d = `M ${source.x + 100} ${source.y + 25} L ${target.x - 20} ${source.y + 25} L ${target.x - 20} ${target.y + 25} L ${target.x} ${target.y + 25}`;
+            } else {
+                d = `M ${source.x + 100} ${source.y + 25} L ${target.x} ${target.y + 25}`;
+            }
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", d);
+            path.setAttribute("class", "edge");
+            path.setAttribute("marker-end", "url(#arrowhead)");
+            svg.appendChild(path);
+        });
+
+        // Draw Nodes
+        mapData.nodes.forEach(node => {
+            const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group.setAttribute("class", "node");
+            group.setAttribute("transform", `translate(${node.x}, ${node.y})`);
+
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("width", 200);
+            rect.setAttribute("height", 50);
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", 100);
+            text.setAttribute("y", 25);
+            text.textContent = node.label;
+
+            group.appendChild(rect);
+            group.appendChild(text);
+            svg.appendChild(group);
+        });
+
+    </script>
+</body>
+
+</html>

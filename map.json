@@ -1,0 +1,116 @@
+{
+  "mode": "backend",
+  "style": {
+    "THEME": "dark",
+    "BG_COLOR": "#0b0d17",
+    "AR": "16:9",
+    "FONT": "Cal Sans",
+    "FONT_WEIGHT": "400",
+    "FONT_COLOR": "#EDEDED",
+    "NODE_FILL": "#151626",
+    "NODE_STROKE": "#7A5CFF",
+    "NODE_RADIUS": 16,
+    "EDGE_COLOR": "#CFC5FF",
+    "EDGE_STYLE": "solid",
+    "EDGE_WIDTH": 2,
+    "GLOW": "on",
+    "GLOW_COLOR": "#7A5CFF",
+    "GLOW_BLUR": 18,
+    "GLOW_SPREAD": 0.5,
+    "DISPLAY": "responsive"
+  },
+  "roles": {},
+  "nodes": [
+    {
+      "id": "Raw Transcript",
+      "label": "Raw Transcript (Chaos)",
+      "type": "external",
+      "icon": "add-file"
+    },
+    {
+      "id": "AI Agent",
+      "label": "AI Agent Processing",
+      "type": "orchestrator",
+      "icon": "cloud-gear"
+    },
+    {
+      "id": "Structured Intelligence",
+      "label": "Structured Intelligence",
+      "type": "db",
+      "icon": "cylinder"
+    },
+    {
+      "id": "Projects",
+      "label": "Projects",
+      "type": "service",
+      "icon": "brain-gear"
+    },
+    {
+      "id": "Products",
+      "label": "Products",
+      "type": "service",
+      "icon": "add-folder"
+    },
+    {
+      "id": "People",
+      "label": "People",
+      "type": "service",
+      "icon": "brain-clipboard"
+    },
+    {
+      "id": "Ideas",
+      "label": "Ideas",
+      "type": "service",
+      "icon": "brain-orbit"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Raw Transcript",
+      "to": "AI Agent",
+      "dir": "->",
+      "kind": "reads",
+      "orientation": "horizontal"
+    },
+    {
+      "from": "AI Agent",
+      "to": "Structured Intelligence",
+      "dir": "->",
+      "kind": "writes",
+      "orientation": "horizontal"
+    },
+    {
+      "from": "Structured Intelligence",
+      "to": "Projects",
+      "dir": "->",
+      "kind": "reads",
+      "orientation": "vertical",
+      "elbow": "down"
+    },
+    {
+      "from": "Structured Intelligence",
+      "to": "Products",
+      "dir": "->",
+      "kind": "reads",
+      "orientation": "vertical",
+      "elbow": "down"
+    },
+    {
+      "from": "Structured Intelligence",
+      "to": "People",
+      "dir": "->",
+      "kind": "reads",
+      "orientation": "vertical",
+      "elbow": "down"
+    },
+    {
+      "from": "Structured Intelligence",
+      "to": "Ideas",
+      "dir": "->",
+      "kind": "reads",
+      "orientation": "vertical",
+      "elbow": "down"
+    }
+  ],
+  "pipeline": null
+}
